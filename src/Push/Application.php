@@ -11,7 +11,19 @@
 
 namespace Aliyun\Push;
 
-class Application
-{
+use Aliyun\Core\ServiceContainer;
 
+/**
+ * Class Application
+ *
+ * @property Push\Client $push
+ */
+class Application extends ServiceContainer
+{
+    /**
+     * @var array
+     */
+    protected $providers = [
+        Push\ServiceProvider::class,
+    ];
 }
