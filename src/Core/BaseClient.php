@@ -24,9 +24,34 @@ class BaseClient
     protected $app;
 
     /**
+     * @var String
+     */
+    protected $accessKeyId;
+
+    /**
+     * @var String
+     */
+    protected $accessKeySecret;
+
+    /**
      * @var Client
      */
     protected $httpClient;
+
+    /**
+     * @var string
+     */
+    protected $format = 'JSON';
+
+    /**
+     * @var string
+     */
+    protected $regionId = 'cn-hangzhou';
+
+    /**
+     * @var string
+     */
+    protected $version;
 
     /**
      * BaseClient constructor.
@@ -89,16 +114,16 @@ class BaseClient
     {
         $param              = $method == 'GET' ? $options['query'] : $options['form_params'];
         $param              = array_merge([
-            'Format'           => 'JSON',
-            'RegionId'         => 'cn-hangzhou',
-            'Version'          => '2016-08-01',
-            'AccessKeyId'      => $this->app['config']->access_key_id,
+            'Format'           => $this->format,
+            'RegionId'         => $this->regionId,
+            'Version'          => $this->version,
+            'AccessKeyId'      => $this->accessKeyId,
             'SignatureMethod'  => 'HMAC-SHA1',
             'SignatureNonce'   => md5(uniqid(mt_rand(), true)),
             'SignatureVersion' => '1.0',
             'Timestamp'        => gmdate('Y-m-d\TH:i:s\Z'),
         ], $param);
-        $signature          = $this->computeSignature($param, $this->app['config']->access_key_secret);
+        $signature          = $this->computeSignature($param, $this->accessKeySecret);
         $param['Signature'] = $signature;
         if ($method == 'GET') {
             $options['query'] = $param;
